@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-We need a lightweight middleware service (`ats-enrichment-service`) that sits between OpenCATS (PHP) and Clay.com's API. Its responsibilities are:
+We need a lightweight middleware service (`ats-enrichment-service`) that sits between OpenCATS (PHP) and external enrichment providers. Its responsibilities are:
 - Protect API keys from the frontend
 - Centralize rate limiting
 - Normalize provider responses

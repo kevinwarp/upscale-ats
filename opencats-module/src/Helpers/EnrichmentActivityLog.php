@@ -33,7 +33,7 @@ class EnrichmentActivityLog
         int $userId,
         string $status,
         float $confidence = 0.0,
-        string $provider = 'clay',
+        string $provider = 'unknown',
         ?string $email = null
     ): void {
         $emailDisplay = $email ? $this->maskEmail($email) : 'N/A';

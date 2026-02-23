@@ -1,7 +1,7 @@
 -- Migration: Add personal email enrichment fields to candidate table
 -- Version: 001
 -- Date: 2026-02-23
--- Description: Adds columns for storing Clay.com email enrichment results
+-- Description: Adds columns for storing email enrichment results
 
 ALTER TABLE candidate
   ADD COLUMN personal_email VARCHAR(255) DEFAULT NULL
@@ -10,7 +10,7 @@ ALTER TABLE candidate
     COMMENT 'Status of the personal email enrichment result',
   ADD COLUMN personal_email_confidence FLOAT DEFAULT NULL
     COMMENT 'Confidence score 0-1 from enrichment provider',
-  ADD COLUMN personal_email_provider VARCHAR(64) DEFAULT 'clay'
+  ADD COLUMN personal_email_provider VARCHAR(64) DEFAULT NULL
     COMMENT 'Provider that supplied the personal email',
   ADD COLUMN personal_email_last_enriched_at DATETIME DEFAULT NULL
     COMMENT 'Timestamp of last enrichment attempt',

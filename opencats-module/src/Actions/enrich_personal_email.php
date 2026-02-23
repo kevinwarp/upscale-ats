@@ -113,7 +113,7 @@ curl_close($ch);
 
 // --- Handle Middleware Response ---
 if ($curlError) {
-    $activityLog->logEnrichmentAttempt($candidateId, $userId, 'error', 0.0, 'clay');
+    $activityLog->logEnrichmentAttempt($candidateId, $userId, 'error');
     http_response_code(502);
     echo json_encode([
         'status'  => 'error',
@@ -134,7 +134,7 @@ if ($httpCode === 429) {
 }
 
 if ($httpCode >= 400) {
-    $activityLog->logEnrichmentAttempt($candidateId, $userId, 'error', 0.0, 'clay');
+    $activityLog->logEnrichmentAttempt($candidateId, $userId, 'error');
     http_response_code($httpCode >= 500 ? 502 : $httpCode);
     echo json_encode([
         'status'  => 'error',
@@ -147,7 +147,7 @@ if ($httpCode >= 400) {
 $result = json_decode($response, true);
 
 if (!$result || !isset($result['status'])) {
-    $activityLog->logEnrichmentAttempt($candidateId, $userId, 'error', 0.0, 'clay');
+    $activityLog->logEnrichmentAttempt($candidateId, $userId, 'error');
     http_response_code(502);
     echo json_encode(['status' => 'error', 'message' => 'Invalid response from enrichment service']);
     exit;
@@ -162,7 +162,7 @@ $activityLog->logEnrichmentAttempt(
     $userId,
     $result['status'],
     (float) ($result['confidence'] ?? 0),
-    $result['source'] ?? 'clay',
+    $result['source'] ?? 'unknown',
     $result['personal_email'] ?? null
 );
 

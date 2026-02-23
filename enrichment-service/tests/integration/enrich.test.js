@@ -1,12 +1,12 @@
 const request = require('supertest');
 const app = require('../../src/index');
 
-// Mock the Clay service to avoid real API calls in tests
-jest.mock('../../src/services/clayService', () => ({
+// Mock the enrichment provider to avoid real API calls in tests
+jest.mock('../../src/services/enrichmentProvider', () => ({
   findPersonalEmail: jest.fn(),
 }));
 
-const clayService = require('../../src/services/clayService');
+const enrichmentProvider = require('../../src/services/enrichmentProvider');
 const { _clearCooldownCache } = require('../../src/middleware/rateLimiter');
 
 const VALID_TOKEN = process.env.ATS_ENRICHMENT_TOKEN || 'test-token';
@@ -16,11 +16,10 @@ jest.mock('../../src/config', () => ({
   port: 3001,
   nodeEnv: 'test',
   logLevel: 'error',
-  clay: {
+  provider: {
+    name: 'none',
     apiKey: 'test-key',
-    apiEndpoint: 'https://api.clay.com/v1',
-    workflowId: 'test-workflow',
-    authMethod: 'api_key',
+    endpoint: 'https://api.example.com/v1',
     timeoutMs: 10000,
   },
   enrichmentToken: 'test-token',
@@ -71,11 +70,11 @@ describe('POST /v1/enrich/personal-email', () => {
   });
 
   it('returns found email on success', async () => {
-    clayService.findPersonalEmail.mockResolvedValue({
+    enrichmentProvider.findPersonalEmail.mockResolvedValue({
       status: 'found',
       personal_email: 'alice@gmail.com',
       confidence: 0.85,
-      source: 'clay',
+      source: 'test',
       provider_metadata: { match_reason: 'linkedin' },
       latency_ms: 150,
     });
@@ -92,12 +91,12 @@ describe('POST /v1/enrich/personal-email', () => {
     expect(res.body.confidence).toBe(0.85);
   });
 
-  it('returns no_match when Clay finds nothing', async () => {
-    clayService.findPersonalEmail.mockResolvedValue({
+  it('returns no_match when provider finds nothing', async () => {
+    enrichmentProvider.findPersonalEmail.mockResolvedValue({
       status: 'no_match',
       personal_email: null,
       confidence: 0,
-      source: 'clay',
+      source: 'none',
       provider_metadata: {},
       latency_ms: 200,
     });
@@ -111,12 +110,12 @@ describe('POST /v1/enrich/personal-email', () => {
     expect(res.body.status).toBe('no_match');
   });
 
-  it('returns error when Clay fails', async () => {
-    clayService.findPersonalEmail.mockResolvedValue({
+  it('returns error when provider fails', async () => {
+    enrichmentProvider.findPersonalEmail.mockResolvedValue({
       status: 'error',
       personal_email: null,
       confidence: 0,
-      source: 'clay',
+      source: 'custom',
       provider_metadata: { error: 'timeout' },
       latency_ms: 10000,
     });

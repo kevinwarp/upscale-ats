@@ -126,7 +126,7 @@ class CandidateEnrichment
         $status = $result['status'] ?? 'error';
         $email = $result['personal_email'] ?? null;
         $confidence = $result['confidence'] ?? null;
-        $provider = $result['source'] ?? 'clay';
+        $provider = $result['source'] ?? 'unknown';
         $payload = isset($result['provider_metadata'])
             ? json_encode($result['provider_metadata'])
             : null;

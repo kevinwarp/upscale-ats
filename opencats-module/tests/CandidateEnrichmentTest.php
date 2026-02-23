@@ -34,7 +34,7 @@ class CandidateEnrichmentTest extends \PHPUnit\Framework\TestCase
                 personal_email TEXT DEFAULT NULL,
                 personal_email_status TEXT DEFAULT NULL,
                 personal_email_confidence REAL DEFAULT NULL,
-                personal_email_provider TEXT DEFAULT 'clay',
+                personal_email_provider TEXT DEFAULT NULL,
                 personal_email_last_enriched_at TEXT DEFAULT NULL,
                 personal_email_enrichment_payload TEXT DEFAULT NULL
             )
@@ -73,7 +73,7 @@ class CandidateEnrichmentTest extends \PHPUnit\Framework\TestCase
             'status'            => 'found',
             'personal_email'    => 'alice@gmail.com',
             'confidence'        => 0.85,
-            'source'            => 'clay',
+            'source'            => 'test',
             'provider_metadata' => ['match_reason' => 'linkedin'],
         ]);
 
@@ -92,7 +92,7 @@ class CandidateEnrichmentTest extends \PHPUnit\Framework\TestCase
             'status'         => 'found',
             'personal_email' => 'alice@gmail.com',
             'confidence'     => 0.85,
-            'source'         => 'clay',
+            'source'         => 'test',
         ]);
         $this->model->markAsVerified(1);
 
@@ -101,7 +101,7 @@ class CandidateEnrichmentTest extends \PHPUnit\Framework\TestCase
             'status'         => 'found',
             'personal_email' => 'newemail@gmail.com',
             'confidence'     => 0.95,
-            'source'         => 'clay',
+            'source'         => 'test',
         ]);
 
         $this->assertFalse($result['updated']);
@@ -119,7 +119,7 @@ class CandidateEnrichmentTest extends \PHPUnit\Framework\TestCase
             'status'         => 'found',
             'personal_email' => 'alice@gmail.com',
             'confidence'     => 0.80,
-            'source'         => 'clay',
+            'source'         => 'test',
         ]);
 
         // Try with lower confidence — should be blocked
@@ -127,7 +127,7 @@ class CandidateEnrichmentTest extends \PHPUnit\Framework\TestCase
             'status'         => 'found',
             'personal_email' => 'other@gmail.com',
             'confidence'     => 0.50,
-            'source'         => 'clay',
+            'source'         => 'test',
         ]);
         $this->assertFalse($result['updated']);
 
@@ -136,7 +136,7 @@ class CandidateEnrichmentTest extends \PHPUnit\Framework\TestCase
             'status'         => 'found',
             'personal_email' => 'better@gmail.com',
             'confidence'     => 0.95,
-            'source'         => 'clay',
+            'source'         => 'test',
         ]);
         $this->assertTrue($result['updated']);
 
@@ -150,14 +150,14 @@ class CandidateEnrichmentTest extends \PHPUnit\Framework\TestCase
             'status'         => 'found',
             'personal_email' => 'alice@gmail.com',
             'confidence'     => 0.90,
-            'source'         => 'clay',
+            'source'         => 'test',
         ]);
 
         $result = $this->model->updateEnrichmentResult(1, [
             'status'         => 'found',
             'personal_email' => 'forced@gmail.com',
             'confidence'     => 0.50,
-            'source'         => 'clay',
+            'source'         => 'test',
         ], true); // forceReplace = true
 
         $this->assertTrue($result['updated']);
@@ -171,7 +171,7 @@ class CandidateEnrichmentTest extends \PHPUnit\Framework\TestCase
             'status'         => 'no_match',
             'personal_email' => null,
             'confidence'     => 0,
-            'source'         => 'clay',
+            'source'         => 'test',
         ]);
 
         $this->assertTrue($result['updated']);
@@ -186,7 +186,7 @@ class CandidateEnrichmentTest extends \PHPUnit\Framework\TestCase
             'status'         => 'found',
             'personal_email' => 'alice@gmail.com',
             'confidence'     => 0.85,
-            'source'         => 'clay',
+            'source'         => 'test',
         ]);
 
         $success = $this->model->markAsVerified(1);

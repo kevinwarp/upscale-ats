@@ -1,7 +1,7 @@
 const express = require('express');
 const { validateEnrichmentRequest } = require('../middleware/validate');
 const { candidateCooldown, recordEnrichment } = require('../middleware/rateLimiter');
-const clayService = require('../services/clayService');
+const enrichmentProvider = require('../services/enrichmentProvider');
 const logger = require('../utils/logger');
 
 const router = express.Router();
@@ -9,7 +9,7 @@ const router = express.Router();
 /**
  * POST /v1/enrich/personal-email
  *
- * Enrich a candidate with their personal email via Clay.com.
+ * Enrich a candidate with their personal email via the configured provider.
  */
 router.post(
   '/personal-email',
@@ -29,7 +29,7 @@ router.post(
     });
 
     try {
-      const result = await clayService.findPersonalEmail({
+      const result = await enrichmentProvider.findPersonalEmail({
         full_name,
         linkedin_url,
         company,
@@ -62,7 +62,7 @@ router.post(
         status: 'error',
         personal_email: null,
         confidence: 0,
-        source: 'clay',
+        source: 'unknown',
         provider_metadata: { error: 'Internal server error' },
         latency_ms: 0,
       });

@@ -5,13 +5,12 @@ const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   logLevel: process.env.LOG_LEVEL || 'info',
 
-  // Clay.com API
-  clay: {
-    apiKey: process.env.CLAY_API_KEY,
-    apiEndpoint: process.env.CLAY_API_ENDPOINT || 'https://api.clay.com/v1',
-    workflowId: process.env.CLAY_WORKFLOW_ID,
-    authMethod: process.env.CLAY_AUTH_METHOD || 'api_key',
-    timeoutMs: 10000,
+  // Enrichment provider
+  provider: {
+    name: process.env.ENRICHMENT_PROVIDER || 'none',
+    apiKey: process.env.ENRICHMENT_PROVIDER_API_KEY,
+    endpoint: process.env.ENRICHMENT_PROVIDER_ENDPOINT,
+    timeoutMs: parseInt(process.env.ENRICHMENT_PROVIDER_TIMEOUT_MS, 10) || 10000,
   },
 
   // Auth

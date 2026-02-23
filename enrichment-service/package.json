@@ -1,7 +1,7 @@
 {
   "name": "ats-enrichment-service",
   "version": "1.0.0",
-  "description": "Middleware service for candidate email enrichment via Clay.com API",
+"description": "Middleware service for candidate email enrichment (provider-agnostic)",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

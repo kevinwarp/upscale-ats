@@ -1,18 +1,18 @@
 # upscale-ats
 
-Candidate email enrichment module for OpenCATS — powered by Clay.com API.
+Candidate email enrichment module for OpenCATS — provider-agnostic.
 
 ## Overview
 
-Adds an **"Enrich Personal Email"** action to OpenCATS candidate profiles that calls Clay.com to find personal email addresses, stores results with confidence scores and provenance, and enforces rate limits, cooldowns, and overwrite-prevention rules.
+Adds an **"Enrich Personal Email"** action to OpenCATS candidate profiles that calls a configurable enrichment provider to find personal email addresses, stores results with confidence scores and provenance, and enforces rate limits, cooldowns, and overwrite-prevention rules.
 
 ## Architecture
 
 ```
-┌──────────────┐      HTTP/JSON       ┌─────────────────────┐      HTTPS       ┌───────────┐
-│   OpenCATS   │ ──────────────────── │  enrichment-service │ ──────────────── │  Clay.com │
-│  (PHP module)│                      │  (Node.js/Express)  │                  │    API    │
-└──────────────┘                      └─────────────────────┘                  └───────────┘
+┌──────────────┐      HTTP/JSON       ┌─────────────────────┐      HTTPS       ┌──────────────┐
+│   OpenCATS   │ ──────────────────── │  enrichment-service │ ──────────────── │   Provider   │
+│  (PHP module)│                      │  (Node.js/Express)  │                  │  (pluggable) │
+└──────────────┘                      └─────────────────────┘                  └──────────────┘
        │                                       │
        └──────── MySQL (shared) ───────────────┘
 ```
@@ -33,7 +33,7 @@ upscale-ats/
 │   ├── src/
 │   │   ├── middleware/      # Auth, rate limiting, validation
 │   │   ├── routes/          # Express route handlers
-│   │   ├── services/        # Clay API client
+│   │   ├── services/        # Enrichment provider (pluggable)
 │   │   └── utils/           # Logger
 │   └── tests/               # Jest tests (unit + integration)
 ├── docs/                    # TRD, ADRs, runbooks
@@ -49,7 +49,7 @@ upscale-ats/
 git clone https://github.com/kevinwarp/upscale-ats.git
 cd upscale-ats
 cp .env.example .env
-# Edit .env with your Clay API key and other secrets
+# Edit .env with your enrichment provider credentials
 
 # 2. Start services
 docker compose up -d
@@ -68,7 +68,7 @@ cd ../opencats-module && phpunit tests/
 - **Rate limiting**: per-user (60/day), global (500/day), per-candidate cooldown (7 days)
 - **Audit logging**: every enrichment attempt logged with user, result, confidence, timestamp
 - **Security**: API keys in env vars only, never in DB; Bearer token auth between services
-- **Extensible**: middleware supports future multi-provider waterfall (Apollo, Hunter, etc.)
+- **Provider-agnostic**: pluggable enrichment providers (Apollo, Hunter, Clearbit, or custom HTTP)
 
 ## License
 
