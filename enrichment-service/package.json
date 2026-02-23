@@ -1,7 +1,7 @@
 {
   "name": "ats-enrichment-service",
   "version": "1.0.0",
-"description": "Middleware service for candidate email enrichment (provider-agnostic)",
+  "description": "Middleware service for candidate email enrichment (provider-agnostic)",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
@@ -14,11 +14,15 @@
   "dependencies": {
     "axios": "^1.7.0",
     "cors": "^2.8.5",
+    "csv-parse": "^6.1.0",
     "dotenv": "^16.4.0",
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.0",
+    "googleapis": "^171.4.0",
     "helmet": "^8.0.0",
     "morgan": "^1.10.0",
+    "multer": "^2.0.2",
+    "mysql2": "^3.17.4",
     "winston": "^3.14.0"
   },
   "devDependencies": {
