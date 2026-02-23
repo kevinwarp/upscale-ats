@@ -154,10 +154,18 @@ async function submitFeedback(token, { scores, recommendation, notes }) {
       recommendation,
     });
 
-    // Check if all feedback is in — if so, post summary
+    // Check if all feedback is in — if so, post summary and generate report
     const summary = await getFeedbackSummary(fb.candidate_id, fb.job_id);
     if (summary.total_submitted === summary.total_requested && summary.total_requested > 0) {
       await slackService.postSummary(summary);
+
+      // Auto-generate report (Phase 2 - Step 14)
+      try {
+        const reportService = require('./reportService');
+        await reportService.checkAndGenerate(fb.candidate_id, fb.job_id);
+      } catch (reportErr) {
+        logger.error('Auto-report generation failed (non-fatal)', { error: reportErr.message });
+      }
     }
   } catch (err) {
     logger.error('Slack post failed (non-fatal)', { error: err.message });

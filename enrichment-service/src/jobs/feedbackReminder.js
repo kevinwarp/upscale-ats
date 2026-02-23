@@ -1,6 +1,7 @@
 const db = require('../db');
 const config = require('../config');
 const logger = require('../utils/logger');
+const slackService = require('../services/slackService');
 
 const CHECK_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
 
@@ -54,13 +55,28 @@ async function sendReminders() {
       [row.id]
     );
 
+    // Send Slack DM reminder
+    if (row.interviewer_email) {
+      const slackUserId = await slackService.lookupUserByEmail(row.interviewer_email);
+      if (slackUserId) {
+        const formUrl = `${config.baseUrl}/feedback/${row.access_token}`;
+        await slackService.sendDM(slackUserId, [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `⏰ Reminder: Please submit your feedback for *${row.candidate_name || 'candidate'}*. <${formUrl}|Submit Feedback>`,
+            },
+          },
+        ], { messageType: 'reminder' }).catch(() => {});
+      }
+    }
+
     logger.info('Feedback reminder sent', {
       feedbackId: row.id,
       interviewer: row.interviewer_name,
       candidate: row.candidate_name,
     });
-
-    // TODO: Send actual email/Slack DM reminder here
   }
 }
 

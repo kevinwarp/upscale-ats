@@ -40,6 +40,9 @@ const config = {
     feedbackWebhookUrl: process.env.SLACK_FEEDBACK_WEBHOOK_URL || '',
     feedbackChannel: process.env.SLACK_FEEDBACK_CHANNEL || '#hiring',
     botToken: process.env.SLACK_BOT_TOKEN || '',
+    signingSecret: process.env.SLACK_SIGNING_SECRET || '',
+    recruitingChannel: process.env.SLACK_RECRUITING_CHANNEL || '#recruiting',
+    appId: process.env.SLACK_APP_ID || '',
   },
 
   // Feedback settings
@@ -48,11 +51,17 @@ const config = {
     lockHours: parseInt(process.env.FEEDBACK_LOCK_HOURS, 10) || 48,
   },
 
-  // Google Calendar
+  // Google Calendar + Gmail + Drive
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID || '',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     redirectUri: process.env.GOOGLE_REDIRECT_URI || '',
+    gmailJobsAddress: process.env.GMAIL_JOBS_ADDRESS || '',
+    gmailWatchLabelIds: process.env.GMAIL_WATCH_LABEL_IDS
+      ? process.env.GMAIL_WATCH_LABEL_IDS.split(',')
+      : ['INBOX'],
+    gmailPubsubTopic: process.env.GMAIL_PUBSUB_TOPIC || '',
+    driveFolderId: process.env.GOOGLE_DRIVE_FOLDER_ID || '',
   },
 
   // Pipeline

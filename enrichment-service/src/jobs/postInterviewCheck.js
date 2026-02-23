@@ -1,6 +1,8 @@
 const db = require('../db');
+const config = require('../config');
 const logger = require('../utils/logger');
 const feedbackService = require('../services/feedbackService');
+const slackService = require('../services/slackService');
 
 const CHECK_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
 
@@ -55,7 +57,7 @@ async function run() {
           const userName = users[0]?.name || `User ${userId}`;
           const userEmail = users[0]?.email || null;
 
-          await feedbackService.createFeedbackRequest({
+          const fbRequest = await feedbackService.createFeedbackRequest({
             candidate_id: event.candidate_id,
             job_id: event.job_id,
             interviewer_user_id: userId,
@@ -65,6 +67,20 @@ async function run() {
             job_title: event.title,
             event_id: event.google_event_id,
           });
+
+          // Send Slack DM with feedback link
+          if (userEmail) {
+            const slackUserId = await slackService.lookupUserByEmail(userEmail);
+            if (slackUserId) {
+              slackService.sendFeedbackRequestDM(slackUserId, {
+                candidateName,
+                jobTitle: event.title,
+                feedbackUrl: fbRequest.form_url,
+                candidateId: event.candidate_id,
+                jobId: event.job_id,
+              }).catch((err) => logger.error('Feedback DM failed', { error: err.message }));
+            }
+          }
         }
 
         // Mark event as completed with feedback requested

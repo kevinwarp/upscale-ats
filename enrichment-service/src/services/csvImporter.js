@@ -113,7 +113,7 @@ async function processRows(importId, records, jobId, defaultSource) {
         `INSERT INTO candidate
           (first_name, last_name, email1, phone_home, web_site,
            candidate_stage, stage_changed_at, source, enrichment_status, date_created, site_id)
-         VALUES (?, ?, ?, ?, ?, 'applied', NOW(), ?, 'pending', NOW(), 1)`,
+         VALUES (?, ?, ?, ?, ?, 'in_pipeline', NOW(), ?, 'pending', NOW(), 1)`,
         [
           row.first_name || '',
           row.last_name || '',

@@ -1,6 +1,8 @@
 const express = require('express');
+const db = require('../db');
 const googleAuth = require('../services/googleAuth');
 const calendarService = require('../services/calendarService');
+const calendarWatcher = require('../services/calendarWatcher');
 const logger = require('../utils/logger');
 
 const router = express.Router();
@@ -29,6 +31,58 @@ router.get('/oauth/callback', async (req, res) => {
   } catch (err) {
     logger.error('OAuth callback failed', { error: err.message });
     res.status(500).json({ error: 'OAuth callback failed' });
+  }
+});
+
+/**
+ * POST /v1/calendar/webhook — Receive Google Calendar push notifications.
+ */
+router.post('/webhook', async (req, res) => {
+  try {
+    const channelId = req.headers['x-goog-channel-id'];
+    const resourceState = req.headers['x-goog-resource-state'];
+
+    if (resourceState === 'sync') {
+      // Initial sync confirmation — just acknowledge
+      return res.status(200).end();
+    }
+
+    logger.info('Calendar push notification', { channelId, resourceState });
+
+    // Find user from channel ID
+    const [rows] = await db.query(
+      "SELECT user_id FROM user_integrations WHERE provider = 'google_calendar_watch' AND access_token = ? AND is_active = TRUE",
+      [channelId]
+    );
+
+    if (rows.length > 0) {
+      const userId = rows[0].user_id;
+      const events = await calendarWatcher.fetchRecentEvents(userId);
+      for (const event of events) {
+        await calendarWatcher.processEvent(event);
+      }
+    }
+
+    res.status(200).end();
+  } catch (err) {
+    logger.error('Calendar webhook error', { error: err.message });
+    res.status(200).end(); // Always 200 to prevent retries
+  }
+});
+
+/**
+ * POST /v1/calendar/watch — Set up push notifications for a user.
+ */
+router.post('/watch', async (req, res) => {
+  try {
+    const userId = parseInt(req.headers['x-user-id']);
+    if (!userId) return res.status(400).json({ error: 'x-user-id header required' });
+
+    const result = await calendarWatcher.setupWatch(userId);
+    res.json({ status: 'watching', ...result });
+  } catch (err) {
+    logger.error('Calendar watch setup failed', { error: err.message });
+    res.status(500).json({ error: 'Failed to set up calendar watch' });
   }
 });
 
