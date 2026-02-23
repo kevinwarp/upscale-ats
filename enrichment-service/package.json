@@ -1,0 +1,33 @@
+{
+  "name": "ats-enrichment-service",
+  "version": "1.0.0",
+  "description": "Middleware service for candidate email enrichment via Clay.com API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest --coverage",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
+    "lint": "eslint src/ tests/"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0",
+    "winston": "^3.14.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: upscale-ats-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${DB_NAME:-opencats}
+      MYSQL_USER: ${DB_USER:-opencats}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-opencatspass}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./opencats-module/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  opencats:
+    image: opencats/opencats:latest
+    container_name: upscale-ats-opencats
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_NAME: ${DB_NAME:-opencats}
+      DATABASE_USER: ${DB_USER:-opencats}
+      DATABASE_PASS: ${DB_PASSWORD:-opencatspass}
+    ports:
+      - "8080:80"
+    volumes:
+      - ./opencats-module/src:/var/www/html/modules/enrichment
+      - opencats_data:/var/www/html/attachments
+
+  enrichment-service:
+    build:
+      context: ./enrichment-service
+      dockerfile: Dockerfile
+    container_name: upscale-ats-enrichment
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - "${ENRICHMENT_SERVICE_PORT:-3001}:3001"
+    volumes:
+      - ./enrichment-service/src:/app/src
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mysql_data:
+  opencats_data:
