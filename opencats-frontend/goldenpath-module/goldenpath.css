@@ -1,0 +1,62 @@
+/* Golden Path Module Styles */
+.gp-container { padding: 16px; }
+.gp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.gp-header h2 { margin: 0; font-size: 16px; font-weight: 600; color: #021a20; }
+.gp-board { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; min-height: 400px; }
+.gp-column { flex: 1; min-width: 200px; max-width: 280px; background: #f5f3f5; border-radius: 8px; padding: 10px; }
+.gp-column-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #838383; padding: 6px 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+.gp-column-header .gp-count { background: #a42ea1; color: #fff; border-radius: 10px; padding: 1px 7px; font-size: 10px; font-weight: 600; }
+.gp-card { background: #fff; border: 1px solid #d7d7d7; border-radius: 6px; padding: 10px; margin-bottom: 8px; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; }
+.gp-card:hover { border-color: #a42ea1; box-shadow: 0 2px 8px rgba(164,46,161,0.1); }
+.gp-card-name { font-size: 12px; font-weight: 600; color: #021a20; margin-bottom: 4px; }
+.gp-card-meta { font-size: 10px; color: #838383; }
+.gp-card-badge { display: inline-block; font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 3px; margin-top: 4px; }
+.gp-badge-green { background: #e6f9e6; color: #114e0b; }
+.gp-badge-yellow { background: #fcf8d8; color: #5e5515; }
+.gp-badge-red { background: #f8e4e4; color: #3b0b0b; }
+.gp-badge-purple { background: #f6ebf6; color: #831f80; }
+
+/* Stats Cards */
+.gp-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.gp-stat-card { background: #fff; border: 1px solid #d7d7d7; border-radius: 8px; padding: 14px; }
+.gp-stat-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #838383; margin-bottom: 4px; }
+.gp-stat-value { font-size: 22px; font-weight: 700; color: #021a20; }
+.gp-stat-sub { font-size: 10px; color: #838383; margin-top: 2px; }
+
+/* Tables */
+.gp-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.gp-table th { background: #021a20; color: #fff; padding: 8px 10px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.gp-table td { padding: 7px 10px; border-bottom: 1px solid #d7d7d7; color: #021a20; }
+.gp-table tr:hover td { background: #f6ebf6; }
+.gp-table .gp-status { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+.gp-status-processed { background: #e6f9e6; color: #114e0b; }
+.gp-status-unmatched { background: #fcf8d8; color: #5e5515; }
+.gp-status-error { background: #f8e4e4; color: #3b0b0b; }
+.gp-status-pending { background: #f6ebf6; color: #831f80; }
+
+/* Section headers */
+.gp-section { margin-bottom: 20px; }
+.gp-section h3 { font-size: 13px; font-weight: 600; color: #021a20; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid #a42ea1; }
+
+/* Bar chart (CSS-only) */
+.gp-bar-row { display: flex; align-items: center; margin-bottom: 6px; }
+.gp-bar-label { width: 120px; font-size: 10px; color: #021a20; font-weight: 500; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gp-bar-track { flex: 1; height: 18px; background: #f5f3f5; border-radius: 4px; overflow: hidden; margin: 0 8px; }
+.gp-bar-fill { height: 100%; background: linear-gradient(90deg, #a42ea1, #831f80); border-radius: 4px; transition: width 0.4s; }
+.gp-bar-value { width: 40px; font-size: 10px; font-weight: 600; color: #021a20; text-align: right; flex-shrink: 0; }
+
+/* Filters */
+.gp-filters { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+.gp-filters select, .gp-filters input { font-size: 11px; padding: 5px 8px; border: 1px solid #d7d7d7; border-radius: 4px; }
+.gp-btn { display: inline-block; padding: 6px 14px; font-size: 11px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; background: #a42ea1; color: #fff; }
+.gp-btn:hover { background: #831f80; }
+.gp-btn-sm { padding: 4px 10px; font-size: 10px; }
+.gp-btn-outline { background: transparent; color: #a42ea1; border: 1px solid #a42ea1; }
+.gp-btn-outline:hover { background: #f6ebf6; }
+
+/* Empty state */
+.gp-empty { text-align: center; padding: 40px; color: #838383; font-size: 12px; }
+.gp-empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+/* Loading */
+.gp-loading { text-align: center; padding: 30px; color: #838383; }
